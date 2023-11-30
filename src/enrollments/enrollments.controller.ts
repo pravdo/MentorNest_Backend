@@ -21,34 +21,39 @@ export class EnrollmentsController {
 
   @Post()
   @ApiCreatedResponse({ type: EnrollmentEntity })
-  create(@Body() createEnrollmentDto: CreateEnrollmentDto) {
-    return this.enrollmentsService.create(createEnrollmentDto);
+  async create(@Body() createEnrollmentDto: CreateEnrollmentDto) {
+    return new EnrollmentEntity(
+      await this.enrollmentsService.create(createEnrollmentDto),
+    );
   }
 
   @Get()
   @ApiOkResponse({ type: EnrollmentEntity, isArray: true })
-  findAll() {
-    return this.enrollmentsService.findAll();
+  async findAll() {
+    const enrollments = await this.enrollmentsService.findAll();
+    return enrollments.map((enrollment) => new EnrollmentEntity(enrollment));
   }
 
   @Get(':id')
   @ApiOkResponse({ type: EnrollmentEntity })
-  findOne(@Param('id') id: string) {
-    return this.enrollmentsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return new EnrollmentEntity(await this.enrollmentsService.findOne(id));
   }
 
   @Patch(':id')
   @ApiOkResponse({ type: EnrollmentEntity })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateEnrollmentDto: UpdateEnrollmentDto,
   ) {
-    return this.enrollmentsService.update(id, updateEnrollmentDto);
+    return new EnrollmentEntity(
+      await this.enrollmentsService.update(id, updateEnrollmentDto),
+    );
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: EnrollmentEntity })
-  remove(@Param('id') id: string) {
-    return this.enrollmentsService.remove(id);
+  async remove(@Param('id') id: string) {
+    return new EnrollmentEntity(await this.enrollmentsService.remove(id));
   }
 }

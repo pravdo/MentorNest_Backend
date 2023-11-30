@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Enrollment } from '@prisma/client';
 import { EnrollmentStatus } from '@prisma/client';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 export class EnrollmentEntity implements Enrollment {
   @ApiProperty({
@@ -48,4 +49,14 @@ export class EnrollmentEntity implements Enrollment {
     type: Date,
   })
   updatedAt: Date;
+
+  @ApiProperty({ required: false, type: UserEntity })
+  user?: UserEntity;
+
+  constructor(data: Partial<EnrollmentEntity>) {
+    Object.assign(this, data);
+    if (data.user) {
+      this.user = new UserEntity(data.user);
+    }
+  }
 }

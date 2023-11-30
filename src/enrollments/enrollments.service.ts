@@ -16,7 +16,10 @@ export class EnrollmentsService {
   }
 
   findOne(enrollmentId: string) {
-    return this.prisma.enrollment.findUnique({ where: { enrollmentId } });
+    return this.prisma.enrollment.findUnique({
+      where: { enrollmentId },
+      include: { user: true },
+    });
   }
 
   update(enrollmentId: string, updateEnrollmentDto: UpdateEnrollmentDto) {
