@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiTags, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 
@@ -33,8 +34,12 @@ export class CoursesController {
 
   @Get(':id')
   @ApiOkResponse({ type: CourseEntity })
-  findOne(@Param('id') id: string) {
-    return this.coursesService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const course = await this.coursesService.findOne(id);
+    if (!course) {
+      throw new NotFoundException(`Course with ${id} does not exist`);
+    }
+    return course;
   }
 
   @Patch(':id')
