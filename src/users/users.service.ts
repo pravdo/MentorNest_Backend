@@ -25,6 +25,16 @@ export class UsersService {
         ...createUserDto,
         role: (createUserDto.role as UserRole) || UserRole.BASIC,
       },
+      select: {
+        id: true,
+        userName: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 

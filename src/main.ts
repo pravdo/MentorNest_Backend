@@ -11,6 +11,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
+  app.enableCors({
+    origin: 'http://localhost:3000', // Enable only for specific origins for security
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // This allows session cookies to be sent back and forth
+  });
+
   const config = new DocumentBuilder()
     .setTitle('MentorNest')
     .setDescription('The MentorNest API description')
