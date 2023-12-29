@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -17,13 +17,23 @@ export class AuthController {
 
   @Post('login')
   @ApiOkResponse({ type: AuthEntity })
-  login(@Body() { email, password }: LoginDto) {
-    return this.authService.login(email, password);
+  async login(@Body() loginDto: LoginDto) {
+    const user = await this.authService.login(
+      loginDto.email,
+      loginDto.password,
+    );
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const accessToken = this.authService.generateJwtToken(user.id);
+    return { accessToken, email: user.email, username: user.userName };
   }
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
-    return user;
+    const token = this.authService.generateJwtToken(user.id);
+    return { ...user, accessToken: token };
   }
 }
